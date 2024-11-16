@@ -161,7 +161,7 @@ def main(args):
             rgb = sample
             rgb = rgb.float().to(device)
             
-            _, _, motion_mask, slot, _ = model(aug_gpu(rgb))
+            _, _, motion_mask, slot, _ = model(aug_gpu(rgb), training=True)
 
             num_points = 8
             sample = torch.randperm(motion_mask.shape[2]//num_frames)[:num_points]
@@ -258,9 +258,10 @@ if __name__ == "__main__":
     parser.add_argument('--dist_on_itp', action='store_true')
     parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
     parser.add_argument('--device', default='cuda', help='device to use for training / testing')
-    
+    parser.add_argument('--gap', default=4, help='This is TODO to fix and figure out what it is, I added it on my own.')
+
     args = parser.parse_args()
-    print(args.replicate)
+    #print(args.replicate)
     args.inference = False
     args.distributed = True
     main(args)

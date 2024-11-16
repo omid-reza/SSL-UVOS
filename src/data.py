@@ -41,7 +41,7 @@ class Dataloader(Dataset):
         self.seq_length = seq_length
         if train:
             self.train = train
-            self.img_dir = '/path/to/ytvis/train'
+            self.img_dir = './DAVIS/JPEGImages/480p'
             self.seq = list([os.path.basename(x) for x in gb.glob(os.path.join(self.img_dir, '*'))])
         else:
             self.train = train

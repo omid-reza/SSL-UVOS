@@ -7,6 +7,10 @@ import json
 from datetime import datetime
 from data import Dataloader
 
+def setup_path(args):
+	# TODO: change the correct pathes with the empty strings
+	return args.output_path, os.path.dirname(args.dino_path), args.output_path
+
 def setup_dataset(args):
     resolution = args.resolution  # h,w
     res = ""
