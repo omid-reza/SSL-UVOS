@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J BETR-ATTN
-#SBATCH --mem=400GB
-#SBATCH --gpus=4
+#SBATCH --mem=300GB
+#SBATCH --gpus=1
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=omid.orh@gmail.com
-#SBATCH --partition=phys
+#SBATCH --partition=all
 #SBATCH -o ./slurm_outputs/RGB-%j.out
 
 module load anaconda
