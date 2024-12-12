@@ -1,5 +1,5 @@
 python -W ignore src/eval_oneshot.py \
-        --basepath ./ \
+        --basepath ./DAVIS \
         --batch_size 1 \
         --num_t 1 \
         --output_path test_log \
