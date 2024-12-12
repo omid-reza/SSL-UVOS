@@ -172,7 +172,19 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     attention = einops.rearrange(attention, 'q k h n m -> (q n) h (k m)')
     attention = attention.softmax(dim=-1)
     attention = attention.mean(dim=1) # thw khw
-    print('spatio-temporal attention matrix:', attention.shape)
+
+    # SAVE MAP
+    os.rmdir("test_saver")
+    os.makedirs("test_saver", exist_ok=True)
+    for t in range(attention.shape[0]):
+        attention_map = attention[t].view(H, W).cpu().numpy()
+        plt.figure(figsize=(8, 8))
+        plt.imshow(attention_map, cmap='viridis')
+        plt.colorbar()
+        plt.title(f"Attention Map Frame {t}")
+        plt.axis('off')
+        plt.savefig(os.path.join("test_saver", f"attention_map_frame_{t}.png"))
+        plt.close()
 
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
@@ -237,7 +249,8 @@ def eval(val_loader, model, device, ratio, tau, save_path=None, writer=None, tra
             masks_collection = {}
             for i in range(T):
                 masks_collection[i] = []
-            masks_collection = mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, device)
+            # masks_collection = mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, device)
+            masks_collection = inference(masks_collection, rgbs, gts, model, T, ratio, tau, device)
             torch.save(masks_collection, save_path+'/%s.pth' % category[0])
 
 def main(args):
