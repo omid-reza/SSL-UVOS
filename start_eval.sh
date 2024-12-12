@@ -1,5 +1,5 @@
 python -W ignore src/eval_oneshot.py \
-        --basepath /path/to/evaluation/data \
+        --basepath ./ \
         --batch_size 1 \
         --num_t 1 \
         --output_path test_log \
@@ -8,12 +8,11 @@ python -W ignore src/eval_oneshot.py \
         --ratio 10 \
         --tau 1.0 \
         --save_path DAVIS_Attn \
-        --resume_path checkpoint_dino-s-8.pth
+        --resume_path checkpoint_9000.pth
 
 rm davis2017-evaluation/results/unsupervised/rvos/*.csv
 
 python davis2017-evaluation/evaluation_method.py \
-        --davis_path /path/to/evaluation/data \
+        --davis_path /DAVIS \
         --task unsupervised \
-        --results_path davis2017-evaluation/results/unsupervised/rvos \
-        --davis_path /path/to/evaluation/data
+        --results_path davis2017-evaluation/results/unsupervised/rvos
