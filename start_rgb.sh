@@ -10,4 +10,4 @@ python -W ignore -m torch.distributed.launch --nproc_per_node=1 --use_env \
         --output_path test_log \
         --dino_path ./dino_deitsmall8_pretrain_full_checkpoint.pth \
         --num_train_steps 10000 \
-	--dataset DAVIS
+	--dataset DAVIS2017
