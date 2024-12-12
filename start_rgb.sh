@@ -8,6 +8,6 @@ python -W ignore -m torch.distributed.launch --nproc_per_node=4 --use_env \
         --lr 1e-5 \
         --num_frames 3 \
         --output_path test_log \
-        --dino_path /home/o_heidar/SSL-UVOS/premodels/dino_deitsmall8_pretrain_full_checkpoint.pth \
+        --dino_path ./dino_deitsmall8_pretrain_full_checkpoint.pth \
         --num_train_steps 200 \
 	--dataset DAVIS
