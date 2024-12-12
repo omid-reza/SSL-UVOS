@@ -1,4 +1,4 @@
-python -W ignore -m torch.distributed.launch --nproc_per_node=4 --use_env \
+python -W ignore -m torch.distributed.launch --nproc_per_node=1 --use_env \
 	src/train_RGB_cluster.py \
         --basepath ./ \
         --batch_size 1 \
