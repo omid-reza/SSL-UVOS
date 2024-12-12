@@ -174,7 +174,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     attention = attention.mean(dim=1) # thw khw
 
     # SAVE MAP
-    os.rmdir("test_saver")
     os.makedirs("test_saver", exist_ok=True)
     for t in range(attention.shape[0]):
         attention_map = attention[t].view(H, W).cpu().numpy()
