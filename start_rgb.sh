@@ -8,6 +8,5 @@ python -W ignore -m torch.distributed.launch --nproc_per_node=1 --use_env \
         --lr 1e-5 \
         --num_frames 3 \
         --output_path test_log \
-        --dino_path ./dino_deitsmall8_pretrain_full_checkpoint.pth \
-        --num_train_steps 10000 \
+        --dino_path ./rgb_models/dino_deitsmall8_pretrain_full_checkpoint.pth \
 	--dataset DAVIS2017
