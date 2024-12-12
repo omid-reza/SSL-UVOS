@@ -13,6 +13,6 @@ python -W ignore src/eval_oneshot.py \
 rm davis2017-evaluation/results/unsupervised/rvos/*.csv
 
 python davis2017-evaluation/evaluation_method.py \
-        --davis_path /DAVIS \
+        --davis_path ./DAVIS \
         --task unsupervised \
         --results_path davis2017-evaluation/results/unsupervised/rvos
