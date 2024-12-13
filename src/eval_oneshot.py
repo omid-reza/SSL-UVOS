@@ -194,7 +194,11 @@ def save_attention_map(attention_map, output_path, frame_idx):
     - frame_idx: The index of the frame being processed.
     """
     os.makedirs(output_path, exist_ok=True)
-    attention_map = attention_map.squeeze(0)
+    if attention_map.dim() == 3:  # For example, if shape is [C, H, W]
+        # Take the first channel or average across channels (if you prefer)
+        attention_map = attention_map.mean(dim=0)  # Averaging across channels (C)
+    elif attention_map.dim() == 4:  # For example, if shape is [B, C, H, W]
+        attention_map = attention_map[0].mean(dim=0)
     attention_map = attention_map.cpu().numpy()
 
     # Normalize to [0, 255] for saving as an image
