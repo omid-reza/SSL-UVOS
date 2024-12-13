@@ -194,6 +194,7 @@ def save_attention_map(attention_map, output_path, frame_idx):
     - frame_idx: The index of the frame being processed.
     """
     os.makedirs(output_path, exist_ok=True)
+    attention_map = attention_map.squeeze(0)
     attention_map = attention_map.cpu().numpy()
 
     # Normalize to [0, 255] for saving as an image
