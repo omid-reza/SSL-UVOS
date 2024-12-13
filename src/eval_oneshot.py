@@ -19,6 +19,8 @@ import kornia
 from kornia.augmentation.container import VideoSequential
 from sklearn.cluster import SpectralClustering
 
+from PIL import Image
+
 def kl_distance(final_set, attn):
     ## kl divergence between two distributions
     self_entropy = - torch.einsum('nc,nc->n', final_set, torch.log(final_set)).unsqueeze(-1) - torch.einsum('mc,mc->m', attn, torch.log(attn)).unsqueeze(0)
@@ -185,6 +187,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
 def save_attention_map(attention_map, output_path, frame_idx):
     """
     Save the attention map as an image.
+
     Parameters:
     - attention_map: The attention map tensor to save (h x w).
     - output_path: The directory to save the image in.
@@ -192,12 +195,15 @@ def save_attention_map(attention_map, output_path, frame_idx):
     """
     os.makedirs(output_path, exist_ok=True)
     attention_map = attention_map.cpu().numpy()
+
+    # Normalize to [0, 255] for saving as an image
     attention_map -= attention_map.min()
     attention_map /= attention_map.max()
-    # plt.imshow(attention_map, cmap='viridis')
-    plt.axis('off')
-    plt.savefig(os.path.join(output_path, f"frame_{frame_idx:03d}.png"), bbox_inches='tight', pad_inches=0)
-    plt.close()
+    attention_map = (attention_map * 255).astype(np.uint8)
+
+    # Convert to image and save
+    img = Image.fromarray(attention_map, mode='L')  # 'L' mode for grayscale
+    img.save(os.path.join(output_path, f"frame_{frame_idx:03d}.png"))
 
 
 def mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
