@@ -183,34 +183,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
         masks_collection[i].append(mask[i])
     return masks_collection
 
-
-def save_attention_map(attention_map, output_path, frame_idx):
-    """
-    Save the attention map as an image.
-
-    Parameters:
-    - attention_map: The attention map tensor to save (h x w).
-    - output_path: The directory to save the image in.
-    - frame_idx: The index of the frame being processed.
-    """
-    os.makedirs(output_path, exist_ok=True)
-    if attention_map.dim() == 3:  # For example, if shape is [C, H, W]
-        # Take the first channel or average across channels (if you prefer)
-        attention_map = attention_map.mean(dim=0)  # Averaging across channels (C)
-    elif attention_map.dim() == 4:  # For example, if shape is [B, C, H, W]
-        attention_map = attention_map[0].mean(dim=0)
-    attention_map = attention_map.cpu().numpy()
-
-    # Normalize to [0, 255] for saving as an image
-    attention_map -= attention_map.min()
-    attention_map /= attention_map.max()
-    attention_map = (attention_map * 255).astype(np.uint8)
-
-    # Convert to image and save
-    img = Image.fromarray(attention_map, mode='L')  # 'L' mode for grayscale
-    img.save(os.path.join(output_path, f"frame_{frame_idx:03d}.png"))
-
-
 def mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     bs = 1
     feats = []
@@ -219,9 +191,7 @@ def mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, d
         input = rgbs[:, i:i+bs]
         input = einops.rearrange(input, 'b t c h w -> (b t) c h w')
         with torch.no_grad():
-            _, attention_maps, _, feat = model.encoder(input)
-            for t_idx, attention_map in enumerate(attention_maps):
-                save_attention_map(attention_map, "Spatio-temporal_Attention_Map", frame_idx=i + t_idx)
+            _, _, _, feat = model.encoder(input)
             feats.append(feat.cpu())
     feats = torch.cat(feats, 0).to(device) # t c h w
     print('spatio-temporal feature:', feats.shape)
