@@ -221,7 +221,7 @@ def mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, d
         with torch.no_grad():
             _, attention_maps, _, feat = model.encoder(input)
             for t_idx, attention_map in enumerate(attention_maps):
-                save_attention_map(attention_map.squeeze(0), "Spatio-temporal_Attention_Map", frame_idx=i + t_idx)
+                save_attention_map(attention_map, "Spatio-temporal_Attention_Map", frame_idx=i + t_idx)
             feats.append(feat.cpu())
     feats = torch.cat(feats, 0).to(device) # t c h w
     print('spatio-temporal feature:', feats.shape)
