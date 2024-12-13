@@ -162,6 +162,8 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
 
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
+    # TODO: Save spatio-temporal attention maps (each T should be in a single image)
+    print("feats.shape", feats.shape)
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
     feats = model.temporal_transformer[0].norm1(feats) # t hw c
@@ -174,7 +176,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     attention = einops.rearrange(attention, 'q k h n m -> (q n) h (k m)')
     attention = attention.softmax(dim=-1)
     attention = attention.mean(dim=1) # thw khw
-
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
     dist = einops.rearrange(dist, '(s p) (t h w) -> t s p h w', t=T, p=1, h=H)
@@ -238,7 +239,8 @@ def eval(val_loader, model, device, ratio, tau, save_path=None, writer=None, tra
             masks_collection = {}
             for i in range(T):
                 masks_collection[i] = []
-            masks_collection = mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, device)
+            # masks_collection = mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, device)
+            masks_collection = inference(masks_collection, rgbs, gts, model, T, ratio, tau, device)
             torch.save(masks_collection, save_path+'/%s.pth' % category[0])
 
 def main(args):
