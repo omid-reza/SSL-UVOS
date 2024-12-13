@@ -163,8 +163,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
     # TODO: Save spatio-temporal attention maps (each T should be in a single image)
-    if os.path.exists("test_saver"):
-        os.rmdir("test_saver")
     os.mkdir("test_saver")
     for t in range(T):
         os.makedirs("test_saver/{}".format(t))
