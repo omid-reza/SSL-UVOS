@@ -163,6 +163,15 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
     # TODO: Save spatio-temporal attention maps (each T should be in a single image)
+    for t in range(T):
+        attention_map = feats[t][0].view(H, W).cpu().numpy()
+        plt.figure(figsize=(8, 8))
+        plt.imshow(attention_map, cmap='viridis')
+        plt.colorbar()
+        plt.title(f"Attention Map Frame {t}")
+        plt.axis('off')
+        plt.savefig(os.path.join("test_saver", f"attention_map_frame_{t}.png"))
+        plt.close()
     print("feats.shape", feats.shape)
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
