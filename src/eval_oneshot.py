@@ -176,6 +176,9 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     # SAVE MAP
     os.makedirs("test_saver", exist_ok=True)
     for t in range(attention.shape[0]):
+        print("attention[t].shape", attention[t].shape)
+        print("H, W", H, W)
+    for t in range(attention.shape[0]):
         attention_map = attention[t].view(H, W).cpu().numpy()
         plt.figure(figsize=(8, 8))
         plt.imshow(attention_map, cmap='viridis')
