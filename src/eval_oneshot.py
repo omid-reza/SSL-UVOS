@@ -194,7 +194,7 @@ def save_attention_map(attention_map, output_path, frame_idx):
     attention_map = attention_map.cpu().numpy()
     attention_map -= attention_map.min()
     attention_map /= attention_map.max()
-    plt.imshow(attention_map, cmap='viridis')
+    # plt.imshow(attention_map, cmap='viridis')
     plt.axis('off')
     plt.savefig(os.path.join(output_path, f"frame_{frame_idx:03d}.png"), bbox_inches='tight', pad_inches=0)
     plt.close()
