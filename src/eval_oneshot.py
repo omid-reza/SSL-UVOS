@@ -162,19 +162,16 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
 
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
-    # TODO: Save spatio-temporal attention maps (each T should be in a single image)
-    os.mkdir("test_saver")
-    for t in range(T):
-        os.makedirs("test_saver/{}".format(t))
-        attention_map = feats[t][0].view(H, W).cpu().numpy()
-        plt.figure(figsize=(8, 8))
-        plt.imshow(attention_map, cmap='viridis')
-        plt.colorbar()
-        plt.title(f"Attention Map Frame {t}")
-        plt.axis('off')
-        plt.savefig(os.path.join("test_saver", f"{t}.png"))
-        plt.close()
-    print("feats.shape", feats.shape)
+    # os.mkdir("test_saver")
+    # for t in range(T):
+    #     attention_map = feats[t][0].view(H, W).cpu().numpy()
+    #     plt.figure(figsize=(8, 8))
+    #     plt.imshow(attention_map, cmap='viridis')
+    #     plt.colorbar()
+    #     plt.title(f"Attention Map Frame {t}")
+    #     plt.axis('off')
+    #     plt.savefig(os.path.join("test_saver", f"{t}.png"))
+    #     plt.close()
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
     feats = model.temporal_transformer[0].norm1(feats) # t hw c
@@ -187,6 +184,9 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     attention = einops.rearrange(attention, 'q k h n m -> (q n) h (k m)')
     attention = attention.softmax(dim=-1)
     attention = attention.mean(dim=1) # thw khw
+    # TODO: Move Saving part to here
+    attention_temporar = attention.view(T, H, W)
+    print("attention_temporar.shape", attention_temporar.shape)
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
     dist = einops.rearrange(dist, '(s p) (t h w) -> t s p h w', t=T, p=1, h=H)
