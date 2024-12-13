@@ -171,13 +171,9 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     attention = torch.einsum('qhnc,khmc->qkhnm', q, k) * model.temporal_transformer[0].attn.scale
     attention = einops.rearrange(attention, 'q k h n m -> (q n) h (k m)')
     attention = attention.softmax(dim=-1)
-    attention = attention.mean(dim=1) # thw khw
 
     # SAVE MAP
     os.makedirs("test_saver", exist_ok=True)
-    for t in range(attention.shape[0]):
-        print("attention[t].shape", attention[t].shape)
-        print("H, W", H, W)
     for t in range(attention.shape[0]):
         attention_map = attention[t].view(H, W).cpu().numpy()
         plt.figure(figsize=(8, 8))
@@ -187,6 +183,8 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
         plt.axis('off')
         plt.savefig(os.path.join("test_saver", f"attention_map_frame_{t}.png"))
         plt.close()
+
+    attention = attention.mean(dim=1) # thw khw
 
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
