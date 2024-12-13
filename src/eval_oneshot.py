@@ -172,7 +172,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
         plt.colorbar()
         plt.title(f"Attention Map Frame {t}")
         plt.axis('off')
-        plt.savefig(os.path.join("test_saver", f"attention_map_frame_{t}.png"))
+        plt.savefig(os.path.join("test_saver", f"{t}.png"))
         plt.close()
     print("feats.shape", feats.shape)
     num_heads = model.temporal_transformer[0].attn.num_heads
