@@ -219,7 +219,7 @@ def mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, d
         input = rgbs[:, i:i+bs]
         input = einops.rearrange(input, 'b t c h w -> (b t) c h w')
         with torch.no_grad():
-            _, _, attention_maps, feat = model.encoder(input)
+            _, attention_maps, _, feat = model.encoder(input)
             for t_idx, attention_map in enumerate(attention_maps):
                 save_attention_map(attention_map.squeeze(0), "Spatio-temporal_Attention_Map", frame_idx=i + t_idx)
             feats.append(feat.cpu())
