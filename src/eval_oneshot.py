@@ -185,7 +185,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device):
     attention = attention.softmax(dim=-1)
     attention = attention.mean(dim=1) # thw khw
     # TODO: Move Saving part to here
-    attention_temporar = attention.view(T, H, W)
+    attention_temporar = attention.view(T, H, W, -1)
     print("attention_temporar.shape", attention_temporar.shape)
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
