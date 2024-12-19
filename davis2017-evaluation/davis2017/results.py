@@ -21,7 +21,7 @@ class Results(object):
             sys.exit()
 
     def load_attn(self, sequence, h, w):
-        masks = torch.load(os.path.join('DAVIS_Attn', sequence+'.pth'), map_location='cpu')
+        masks = torch.load(os.path.join('DAVIS_Attn', sequence+'.pth'), map_location='cpu', weights_only=False)
         max_obj = 0
         results = []
         for t, v in masks.items():
