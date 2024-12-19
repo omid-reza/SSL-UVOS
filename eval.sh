@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J BBA-EVAL
-#SBATCH --mem=300GB
+#SBATCH --mem=600GB
 #SBATCH --gpus=1
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=omid.orh@gmail.com
