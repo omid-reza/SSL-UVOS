@@ -9,7 +9,7 @@ images.sort(key=lambda x: int(x.split('.')[0]))
 frame = cv2.imread(os.path.join(image_folder, images[0]))
 height, width, layers = frame.shape
 
-video = cv2.VideoWriter(video_name, 0, 1, (width,height))
+video = cv2.VideoWriter(video_name, 0, 3, (width,height))
 
 for image in images:
     video.write(cv2.imread(os.path.join(image_folder, image)))
