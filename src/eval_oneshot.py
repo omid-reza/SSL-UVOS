@@ -248,7 +248,7 @@ def eval(val_loader, model, device, ratio, tau, save_path=None, writer=None, tra
             for i in range(T):
                 masks_collection[i] = []
             # masks_collection = mem_efficient_inference(masks_collection, rgbs, gts, model, T, ratio, tau, device)
-            masks_collection = inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, category)
+            masks_collection = inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, category[0])
             torch.save(masks_collection, save_path+'/%s.pth' % category[0])
 
 def main(args):
