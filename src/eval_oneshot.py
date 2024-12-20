@@ -161,11 +161,12 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
 
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
-    if not os.path.exists("test_saver"):
-        os.mkdir("test_saver/{}".format(category))
-    if os.path.exists("test_saver/{}".format(category)):
-        shutil.rmtree("test_saver/{}".format(category))
-    os.mkdir("test_saver/{}".format(category))
+    parent_directory = os.path.join(os.getcwd(), "test_saver")
+    if not os.path.exists(parent_directory):
+        os.mkdir(parent_directory)
+    if os.path.exists(os.path.join(parent_directory, category)):
+        shutil.rmtree(os.path.join(parent_directory, category))
+    os.mkdir(os.path.join(parent_directory, category))
     for t in range(T):
         # TODO: Apply softmax to attention_map
         # TODO: Take majority voting of correspondences across the heads
@@ -175,7 +176,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         plt.colorbar()
         plt.title(f"Attention Map Frame {t}")
         plt.axis('off')
-        plt.savefig(os.path.join("test_saver/{}".format(category), f"{t}.png"))
+        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"))
         plt.close()
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
