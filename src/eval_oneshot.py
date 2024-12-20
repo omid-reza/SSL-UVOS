@@ -176,13 +176,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         attention_maps = majority_votes.reshape(attention_maps.shape[1], attention_maps.shape[2])
         # Apply softmax to attention_map
         attention_maps = F.softmax(torch.tensor(attention_maps), dim=-1).numpy()
-        plt.figure(figsize=(8, 8))
-        plt.imshow(attention_maps, cmap='viridis')
-        plt.colorbar()
-        plt.title(f"Attention Map Frame {t}")
-        plt.axis('off')
-        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"))
-        plt.close()
+        plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), attention_maps, cmap='viridis')
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
     feats = model.temporal_transformer[0].norm1(feats) # t hw c
