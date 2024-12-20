@@ -175,7 +175,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         majority_votes, _ = stats.mode(attention_maps_flat, axis=0)
         attention_maps = majority_votes.reshape(attention_maps.shape[1], attention_maps.shape[2])
         # Apply softmax to attention_map
-        attention_maps = F.softmax(torch.tensor(attention_maps), dim=-1).cpu().numpy()
+        attention_maps = F.softmax(torch.tensor(attention_maps).cpu(), dim=-1).cpu().numpy()
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), attention_maps, cmap='viridis')
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
