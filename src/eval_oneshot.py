@@ -21,6 +21,7 @@ from kornia.augmentation.container import VideoSequential
 from sklearn.cluster import SpectralClustering
 
 from PIL import Image
+from scipy import stats
 
 def kl_distance(final_set, attn):
     ## kl divergence between two distributions
@@ -168,11 +169,15 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         shutil.rmtree(os.path.join(parent_directory, category))
     os.mkdir(os.path.join(parent_directory, category))
     for t in range(T):
+        # Take majority voting of correspondences across the heads
+        attention_maps = feats[t]
+        attention_maps_flat = attention_maps.view(attention_maps.shape[0], -1)
+        majority_votes, _ = stats.mode(attention_maps_flat, axis=0)
+        attention_maps = majority_votes.reshape(attention_maps.shape[1], attention_maps.shape[2])
         # TODO: Apply softmax to attention_map
-        # TODO: Take majority voting of correspondences across the heads
-        attention_map = feats[t][0].view(H, W).cpu().numpy()
+        # attention_map = feats[t][0].view(H, W).cpu().numpy()
         plt.figure(figsize=(8, 8))
-        plt.imshow(attention_map, cmap='viridis')
+        plt.imshow(attention_maps, cmap='viridis')
         plt.colorbar()
         plt.title(f"Attention Map Frame {t}")
         plt.axis('off')
