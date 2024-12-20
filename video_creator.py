@@ -1,7 +1,7 @@
 import cv2
 import os
 
-categories = [x[0] for x in os.walk("Spatio-temporalAttentionMaps")]
+categories = [d for d in os.listdir("Spatio-temporalAttentionMaps") if os.path.isdir(os.path.join("Spatio-temporalAttentionMaps", d))]
 
 for category in categories:
     image_folder = os.path.join("Spatio-temporalAttentionMaps", category)
