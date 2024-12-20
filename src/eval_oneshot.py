@@ -174,8 +174,8 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         attention_maps_flat = attention_maps.view(attention_maps.shape[0], -1)
         majority_votes, _ = stats.mode(attention_maps_flat, axis=0)
         attention_maps = majority_votes.reshape(attention_maps.shape[1], attention_maps.shape[2])
-        # TODO: Apply softmax to attention_map
-        # attention_map = feats[t][0].view(H, W).cpu().numpy()
+        # Apply softmax to attention_map
+        attention_maps = F.softmax(torch.tensor(attention_maps), dim=-1).numpy()
         plt.figure(figsize=(8, 8))
         plt.imshow(attention_maps, cmap='viridis')
         plt.colorbar()
