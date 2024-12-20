@@ -161,6 +161,8 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
 
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
+    if not os.path.exists("test_saver"):
+        os.mkdir("test_saver/{}".format(category))
     if os.path.exists("test_saver/{}".format(category)):
         shutil.rmtree("test_saver/{}".format(category))
     os.mkdir("test_saver/{}".format(category))
