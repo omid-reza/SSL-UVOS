@@ -208,12 +208,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         att_map_avg = averaged_matrix.sum(axis=1) # Shape becomes (H * W)
         print("att_map_avg.shape", att_map_avg.shape)
         att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
-        fig, ax = plt.subplots(figsize=(1920 / 100, 1280 / 100))
-        ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
-        ax.axis('off')
-        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=300, bbox_inches='tight')
-        plt.close(fig)
-        # plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
+        plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
         print("->SAVED :)")
     #
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
