@@ -199,12 +199,13 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     if os.path.exists(os.path.join(parent_directory, category)):
         shutil.rmtree(os.path.join(parent_directory, category))
     os.mkdir(os.path.join(parent_directory, category))
-    for t in range(attention.shape[0]): # for t in range(number of frames)
+    attention_reshaped = attention.reshape(T, H * W, 5, H * W)
+    for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
         att_map = attention[t].detach().cpu().numpy()
-        print("att_map.shape", att_map.shape)
-        att_map_avg = att_map.mean(axis=0)
+        averaged_matrix = att_map.mean(axis=1) # Shape becomes (H * W, K, H * W)
+        att_map_avg = averaged_matrix.sum(axis=1) # Shape becomes (H * W)
         print("att_map.shape", att_map_avg.shape)
-        att_map_reshaped = att_map_avg.reshape(40, 60)
+        att_map_reshaped = att_map_avg.reshape(H, W)
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis')
     #
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
