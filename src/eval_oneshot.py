@@ -186,7 +186,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     q, k, _ = qkv.cpu().unbind(0) # t h hw c
     key_indices = torch.arange(T//ratio) * ratio # sparse sampling the keys with a sparsity ratio
     k = k[key_indices]
-    print("k", k)
+    print("k", k.shape)
     attention = torch.einsum('qhnc,khmc->qkhnm', q, k) * model.temporal_transformer[0].attn.scale
     attention = einops.rearrange(attention, 'q k h n m -> (q n) h (k m)')
     attention = attention.softmax(dim=-1)
