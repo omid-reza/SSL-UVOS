@@ -190,6 +190,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     attention = attention.softmax(dim=-1)
     attention = attention.mean(dim=1) # thw khw
     #
+    print("attention.shape", attention.shape)
     parent_directory = os.path.join(os.getcwd(), "Spatio-temporalAttentionMaps")
     if not os.path.exists(parent_directory):
         os.mkdir(parent_directory)
