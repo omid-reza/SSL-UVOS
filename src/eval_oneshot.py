@@ -200,7 +200,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     os.mkdir(os.path.join(parent_directory, category))
     for t in range(attention.shape[0]): # for t in range(number of frames)
         att_map = attention[t].detach().cpu().numpy()
-        H = int(np.sqrt(att_map.shape[0]))  # Assuming square spatial dimensions
+        print("att_map.shape", att_map.shape)
         att_map_reshaped = att_map.reshape(40, 60)
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis')
     #
