@@ -159,25 +159,9 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
             _, _, _, feat = model.encoder(input)
             feats.append(feat.cpu())
     feats = torch.cat(feats, 0).to(device) # t c h w
-
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
     print("T, C, H, W", T, C, H, W)
-    # parent_directory = os.path.join(os.getcwd(), "Spatio-temporalAttentionMaps")
-    # if not os.path.exists(parent_directory):
-    #     os.mkdir(parent_directory)
-    # if os.path.exists(os.path.join(parent_directory, category)):
-    #     shutil.rmtree(os.path.join(parent_directory, category))
-    # os.mkdir(os.path.join(parent_directory, category))
-    # for t in range(T):
-    #     # Take majority voting of correspondences across the heads
-    #     attention_maps = feats[t]
-    #     attention_maps_flat = attention_maps.view(attention_maps.shape[0], -1)
-    #     majority_votes, _ = stats.mode(attention_maps_flat.cpu(), axis=0)
-    #     attention_maps = majority_votes.reshape(attention_maps.shape[1], attention_maps.shape[2])
-    #     # Apply softmax to attention_map
-    #     attention_maps = F.softmax(torch.tensor(attention_maps).cpu(), dim=-1).cpu().numpy()
-    #     plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), attention_maps, cmap='viridis')
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
     feats = model.temporal_transformer[0].norm1(feats) # t hw c
@@ -202,10 +186,11 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     attention_reshaped = attention.reshape(T, H * W, 5, H * W)
     print("attention_reshaped.shape", attention_reshaped.shape)
     for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
-        att_map = attention_reshaped[t].detach().cpu().numpy()
-        averaged_matrix = att_map.mean(axis=1) # Shape becomes (H * W, K, H * W)
-        print("averaged_matrix.shape", averaged_matrix.shape)
-        att_map_avg = averaged_matrix.sum(axis=1) # Shape becomes (H * W)
+        att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
+        # Apply majority Voting
+        majority_matrix = np.apply_along_axis(lambda x: np.bincount(x.astype(int), minlength=H * W).argmax(), axis=1,arr=att_map)  # Shape becomes (H * W, H * W)
+        print("averaged_matrix.shape", majority_matrix.shape)
+        att_map_avg = majority_matrix.max(axis=1) # Shape becomes (H * W) by using Maximum Attention
         print("att_map_avg.shape", att_map_avg.shape)
         att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
