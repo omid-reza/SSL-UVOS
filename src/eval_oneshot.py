@@ -162,6 +162,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
 
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
+    print("T, C, H, W", T, C, H, W)
     # parent_directory = os.path.join(os.getcwd(), "Spatio-temporalAttentionMaps")
     # if not os.path.exists(parent_directory):
     #     os.mkdir(parent_directory)
