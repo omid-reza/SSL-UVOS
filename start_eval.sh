@@ -10,9 +10,9 @@ python -W ignore src/eval_oneshot.py \
         --save_path DAVIS_Attn \
         --resume_path ./rgb_models/checkpoint_dino-s-8.pth
 
-rm davis2017-evaluation/results/unsupervised/rvos/*.csv
+#rm davis2017-evaluation/results/unsupervised/rvos/*.csv
 
-python davis2017-evaluation/evaluation_method.py \
-        --davis_path ./DAVIS \
-        --task unsupervised \
-        --results_path davis2017-evaluation/results/unsupervised/rvos
+#python davis2017-evaluation/evaluation_method.py \
+#        --davis_path ./DAVIS \
+#        --task unsupervised \
+#        --results_path davis2017-evaluation/results/unsupervised/rvos
