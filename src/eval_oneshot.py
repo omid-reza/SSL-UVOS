@@ -196,7 +196,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
 
 
-        fig, ax = plt.subplots(figsize=(1920 / 100, 1280 / 100))
+        fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
         ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
         ax.axis('off')
         plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=300, bbox_inches='tight')
