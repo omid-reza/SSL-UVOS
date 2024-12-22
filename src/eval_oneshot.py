@@ -183,7 +183,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     if os.path.exists(os.path.join(parent_directory, category)):
         shutil.rmtree(os.path.join(parent_directory, category))
     os.mkdir(os.path.join(parent_directory, category))
-    attention_reshaped = attention.reshape(T, H * W, 5, H * W)
+    attention_reshaped = attention.reshape(T, H * W, k[0], H * W) # Shape becomes (T, H * W, K, H * W)
     print("attention_reshaped.shape", attention_reshaped.shape)
     for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
         att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
