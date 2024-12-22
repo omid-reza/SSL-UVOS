@@ -190,7 +190,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         # Apply majority Voting
         majority_matrix = np.apply_along_axis(lambda x: np.bincount(x.astype(int), minlength=H * W).argmax(), axis=1,arr=att_map)  # Shape becomes (H * W, H * W)
         print("averaged_matrix.shape", majority_matrix.shape)
-        att_map_avg = majority_matrix.max(axis=1) # Shape becomes (H * W) by using Maximum Attention
+        att_map_avg = majority_matrix.sum(axis=1) # Shape becomes (H * W)
         print("att_map_avg.shape", att_map_avg.shape)
         att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
