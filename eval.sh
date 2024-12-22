@@ -11,3 +11,4 @@ module load anaconda
 eval "$(conda shell.bash hook)"
 conda activate /home/o_heidar/bbaenv
 bash start_eval.sh
+python video_creator.py
