@@ -197,7 +197,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         att_map_reshaped = att_map_avg.reshape(H, W)
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
         print("{}->SAVED :)".format(t))
-        pickle_filename = os.path.join(parent_directory, category, f"{t}_att_map.pkl")
+        pickle_filename = os.path.join(parent_directory, category, f"{t}.pkl")
         with open(pickle_filename, 'wb') as f:
             pickle.dump(att_map_reshaped, f)
     #
