@@ -195,7 +195,8 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
 
         for head_num in range(k.shape[0]):
             head_x_att_map = att_map[:, head_num, :]
-            head_x_att_map = head_x_att_map.squeeze(axis=1)
+            print(head_x_att_map.shape)
+            # head_x_att_map = head_x_att_map.squeeze(axis=1)
             att_map_avg = head_x_att_map.max(axis=1)
             att_map_reshaped = att_map_avg.reshape(H, W)
             fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
