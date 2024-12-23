@@ -163,7 +163,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     feats = torch.cat(feats, 0).to(device) # t c h w
     ## calculate the spatio-temporal attention, use sparse sampling on keys to reduce computational cost
     T, C, H, W = feats.shape
-    print("T, C, H, W", T, C, H, W)
     num_heads = model.temporal_transformer[0].attn.num_heads
     feats = einops.rearrange(feats, 't c h w -> t (h w) c')
     feats = model.temporal_transformer[0].norm1(feats) # t hw c
@@ -172,13 +171,11 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     q, k, _ = qkv.cpu().unbind(0) # t h hw c
     key_indices = torch.arange(T//ratio) * ratio # sparse sampling the keys with a sparsity ratio
     k = k[key_indices]
-    print("k", k.shape)
     attention = torch.einsum('qhnc,khmc->qkhnm', q, k) * model.temporal_transformer[0].attn.scale
     attention = einops.rearrange(attention, 'q k h n m -> (q n) h (k m)')
     attention = attention.softmax(dim=-1)
     attention = attention.mean(dim=1) # thw khw
     #
-    print("attention.shape", attention.shape)
     parent_directory = os.path.join(os.getcwd(), "Spatio-temporalAttentionMaps")
     if not os.path.exists(parent_directory):
         os.mkdir(parent_directory)
@@ -186,7 +183,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         shutil.rmtree(os.path.join(parent_directory, category))
     os.mkdir(os.path.join(parent_directory, category))
     attention_reshaped = attention.reshape(T, H * W, k.shape[0], H * W) # Shape becomes (T, H * W, K, H * W)
-    print("attention_reshaped.shape", attention_reshaped.shape)
     for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
         att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
         # averaged_matrix = att_map.mean(axis=1) # Shape becomes (H * W, H * W)
@@ -197,11 +193,10 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         # att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
 
         majority_votes, _ = stats.mode(att_map, axis=1)
-        print("majority_votes.shape", majority_votes.shape)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
-        print("->SAVED :)")
+        print("{}->SAVED :)".format(t))
         pickle_filename = os.path.join(parent_directory, category, f"{t}_att_map.pkl")
         with open(pickle_filename, 'wb') as f:
             pickle.dump(att_map_reshaped, f)
