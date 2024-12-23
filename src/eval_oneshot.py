@@ -192,14 +192,28 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         # print("att_map_avg", att_map_avg)
         # att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
 
+
+        for head_num in range(k.shape[0]):
+            head_x_att_map = att_map[:, head_num, :]
+            head_x_att_map = head_x_att_map.squeeze(axis=1)
+            att_map_avg = head_x_att_map.max(axis=1)
+            att_map_reshaped = att_map_avg.reshape(H, W)
+            fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
+            ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
+            ax.axis('off')
+            plt.savefig(os.path.join(parent_directory, category, f"{t}-HEAD{head_num}.png"), dpi=300, bbox_inches='tight')
+            plt.close(fig)
+            print(f"{t}-HEAD{head_num}->SAVED :)")
+
         majority_votes, _ = stats.mode(att_map, axis=1)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
-        plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
+        fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
+        ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
+        ax.axis('off')
+        plt.savefig(os.path.join(parent_directory, category, f"{t}-HEAD{head_num}.png"), dpi=300, bbox_inches='tight')
+        plt.close(fig)
         print("{}->SAVED :)".format(t))
-        pickle_filename = os.path.join(parent_directory, category, f"{t}.pkl")
-        with open(pickle_filename, 'wb') as f:
-            pickle.dump(att_map_reshaped, f)
     #
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
