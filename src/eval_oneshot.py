@@ -190,7 +190,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         # Apply majority Voting
         averaged_matrix = att_map.mean(axis=1) # Shape becomes (H * W, H * W)
         print("averaged_matrix.shape", averaged_matrix.shape)
-        att_map_avg = averaged_matrix.max(axis=1) # Shape becomes (H * W)
+        att_map_avg = averaged_matrix.mean(axis=1) # Shape becomes (H * W)
         print("att_map_avg.shape", att_map_avg.shape)
         print("att_map_avg", att_map_avg)
         att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
