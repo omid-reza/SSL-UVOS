@@ -5,18 +5,19 @@ import matplotlib.pyplot as plt
 from src.omnimotionutil import flow_uv_to_colors, flow_to_image
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-folder_path = 'Spatio-temporalAttentionMaps/dog'
+folder_path = 'Spatio-temporalAttentionMaps/dog_min'
 attention_maps = []
 for filename in os.listdir(folder_path):
     if filename.endswith('.png'):
         attention_map = cv2.imread(os.path.join(folder_path, filename), cv2.IMREAD_GRAYSCALE)
         if attention_map is not None:
             attention_maps.append(attention_map)
-
+print("attention_maps is loaded.")
 flow_tensors = []
 
 # Step 3: Compute the displacement between consecutive frames
 for t in range(len(attention_maps) - 1):
+    print("Processing frame {}".format(t))
     frame_t, frame_t1 = attention_maps[t], attention_maps[t + 1]
     H, W = frame_t.shape
     flow_tensor = np.zeros((H, W, 2), dtype=np.float32)
@@ -33,7 +34,7 @@ for t in range(len(attention_maps) - 1):
 
 flow_tensors = np.array(flow_tensors)
 for t in range(flow_tensors.shape[0]):
-    flow_image  = flow_to_image(flow_tensors[t])
+    # flow_image  = flow_to_image(flow_tensors[t])
     flow_image = flow_uv_to_colors(flow_tensors[t, :, :, 0], flow_tensors[t, :, :, 1])
     plt.figure(figsize=(8, 8))
     plt.imshow(flow_image)
