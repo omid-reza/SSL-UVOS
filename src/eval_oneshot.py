@@ -183,15 +183,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         shutil.rmtree(os.path.join(parent_directory, category))
     os.mkdir(os.path.join(parent_directory, category))
     attention_reshaped = attention.reshape(T, H * W, k.shape[0], H * W) # Shape becomes (T, H * W, K, H * W)
-
-    # majority voting
-    def majority_voting(attention_map, axis):
-        # Find the unique elements and their counts
-        unique, counts = np.unique(attention_map, axis=axis, return_counts=True)
-        # Find the index of the maximum count
-        mode_idx = np.argmax(counts, axis=axis)
-        return unique[mode_idx]
-
     for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
         att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
         # averaged_matrix = att_map.mean(axis=1) # Shape becomes (H * W, H * W)
@@ -201,7 +192,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         # print("att_map_avg", att_map_avg)
         # att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
 
-        majority_votes = majority_voting(att_map, axis=1)
+        majority_votes, _ = stats.mode(att_map, axis=1)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
         plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
