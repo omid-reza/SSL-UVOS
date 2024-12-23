@@ -20,16 +20,12 @@ for t in range(len(attention_maps) - 1):
     print("Processing frame {}".format(t))
     frame_t, frame_t1 = attention_maps[t], attention_maps[t + 1]
     H, W = frame_t.shape
-    flow_tensor = np.zeros((H, W, 2), dtype=np.float32)
-    for y in range(H):
-        for x in range(W):
-            max_val_t1 = np.max(frame_t1)
-            max_loc_t1 = np.unravel_index(np.argmax(frame_t1, axis=None), frame_t1.shape)
-            delta_x = max_loc_t1[1] - x  # Horizontal displacement
-            delta_y = max_loc_t1[0] - y  # Vertical displacement
-            # Store displacements in the flow tensor
-            flow_tensor[y, x, 0] = delta_x
-            flow_tensor[y, x, 1] = delta_y
+    max_loc_t1 = np.unravel_index(np.argmax(frame_t1, axis=None), frame_t1.shape)
+    max_y, max_x = max_loc_t1
+    y_coords, x_coords = np.meshgrid(np.arange(H), np.arange(W), indexing="ij")
+    delta_x = max_x - x_coords
+    delta_y = max_y - y_coords
+    flow_tensor = np.stack((delta_x, delta_y), axis=-1).astype(np.float32)
     flow_tensors.append(flow_tensor)
 
 flow_tensors = np.array(flow_tensors)
