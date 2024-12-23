@@ -195,6 +195,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         # att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
 
         majority_votes, _ = stats.mode(att_map, axis=1)
+        print("majority_votes.shape", majority_votes.shape)
         att_map_avg = majority_votes.flatten()
         att_map_reshaped = att_map_avg.reshape(H, W)
 
