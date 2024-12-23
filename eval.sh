@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J BBA-EVAL
-#SBATCH --mem=900GB
-#SBATCH --gpus=13
+#SBATCH --mem=680GB
+#SBATCH --gpus=8
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=omid.orh@gmail.com
-#SBATCH --partition=all
+#SBATCH --partition=phys
 #SBATCH -o ./slurm_outputs/EVAL-%j.out
 
 module load anaconda
