@@ -190,7 +190,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         att_map_reshaped = att_map_avg.reshape(H, W)
         att_map_reshaped = att_map_reshaped.astype(np.uint8)
         attention_image = Image.fromarray(att_map_reshaped)
-        resized_image = attention_image.resize((600, 400), Image.ANTIALIAS)
+        resized_image = attention_image.resize((600, 400), Image.Resampling.LANCZOS)
         resized_image.save(os.path.join(parent_directory, category, f"{t}.png"))
         print(f"{t}->SAVED :)")
     #
