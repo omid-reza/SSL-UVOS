@@ -198,7 +198,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         print("majority_votes.shape", majority_votes.shape)
         # att_map_avg = majority_votes.flatten()
         print("majority_votes.flatten().shape", majority_votes.flatten().shape)
-        att_map_avg = att_map_avg.min(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
+        att_map_avg = majority_votes.min(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
 
         fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
