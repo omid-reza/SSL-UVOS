@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from src.omnimotionutil import flow_uv_to_colors, flow_to_image
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-folder_path = 'Spatio-temporalAttentionMaps/dog_min'
+folder_path = 'Spatio-temporalAttentionMaps/dog'
 attention_maps = []
 for filename in os.listdir(folder_path):
     if filename.endswith('.png'):
