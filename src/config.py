@@ -29,11 +29,12 @@ def setup_dataset(args):
         basepath = args.basepath
         img_dir = basepath + '/JPEGImages/480p'
         gt_dir = basepath + '/Annotations/480p'
-        val_seq = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees', 
-                    'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane', 
-                    'motocross-jump', 'horsejump-high', 'drift-straight', 'car-roundabout', 'paragliding-launch',
-                    'bike-packing', 'dogs-jump', 'gold-fish', 'india', 'judo', 'lab-coat', 'loading', 'mbike-trick', 
-                    'pigs', 'shooting']
+        val_seq = ['cat-girl']
+        # val_seq = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees',
+        #             'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane',
+        #             'motocross-jump', 'horsejump-high', 'drift-straight', 'car-roundabout', 'paragliding-launch',
+        #             'bike-packing', 'dogs-jump', 'gold-fish', 'india', 'judo', 'lab-coat', 'loading', 'mbike-trick',
+        #             'pigs', 'shooting']
         val_data_dir = [img_dir, img_dir, gt_dir]
         res = "480p"
 
