@@ -188,12 +188,11 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         majority_votes, _ = stats.mode(att_map, axis=1)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
-        fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
-        ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
-        ax.axis('off')
-        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=300, bbox_inches='tight')
-        plt.close(fig)
-        print("{}->SAVED :)".format(t))
+        att_map_reshaped = att_map_reshaped.astype(np.uint8)
+        attention_image = Image.fromarray(att_map_reshaped)
+        resized_image = attention_image.resize((600, 400), Image.ANTIALIAS)
+        resized_image.save(os.path.join(parent_directory, category, f"{t}.png"))
+        print(f"{t}->SAVED :)")
     #
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
