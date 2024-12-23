@@ -23,6 +23,8 @@ from sklearn.cluster import SpectralClustering
 from PIL import Image
 from scipy import stats
 
+import pickle
+
 def kl_distance(final_set, attn):
     ## kl divergence between two distributions
     self_entropy = - torch.einsum('nc,nc->n', final_set, torch.log(final_set)).unsqueeze(-1) - torch.einsum('mc,mc->m', attn, torch.log(attn)).unsqueeze(0)
@@ -198,14 +200,11 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         print("majority_votes.shape", majority_votes.shape)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
-
-        fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
-        ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
-        ax.axis('off')
-        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=300, bbox_inches='tight')
-        plt.close(fig)
-        # plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
+        plt.imsave(os.path.join(parent_directory, category, f"{t}.png"), att_map_reshaped, cmap='viridis', dpi=300)
         print("->SAVED :)")
+        pickle_filename = os.path.join(parent_directory, category, f"{t}_att_map.pkl")
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(att_map_reshaped, f)
     #
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
