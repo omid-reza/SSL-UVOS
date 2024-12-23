@@ -185,27 +185,6 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     attention_reshaped = attention.reshape(T, H * W, k.shape[0], H * W) # Shape becomes (T, H * W, K, H * W)
     for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
         att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
-        # averaged_matrix = att_map.mean(axis=1) # Shape becomes (H * W, H * W)
-        # print("averaged_matrix.shape", averaged_matrix.shape)
-        # att_map_avg = averaged_matrix.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
-        # print("att_map_avg.shape", att_map_avg.shape)
-        # print("att_map_avg", att_map_avg)
-        # att_map_reshaped = att_map_avg.reshape(H, W) # Shape becomes (H, W)
-
-
-        for head_num in range(k.shape[0]):
-            head_x_att_map = att_map[:, head_num, :]
-            print(head_x_att_map.shape)
-            # head_x_att_map = head_x_att_map.squeeze(axis=1)
-            att_map_avg = head_x_att_map.max(axis=1)
-            att_map_reshaped = att_map_avg.reshape(H, W)
-            fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
-            ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
-            ax.axis('off')
-            plt.savefig(os.path.join(parent_directory, category, f"{t}-HEAD{head_num}.png"), dpi=300, bbox_inches='tight')
-            plt.close(fig)
-            print(f"{t}-HEAD{head_num}->SAVED :)")
-
         majority_votes, _ = stats.mode(att_map, axis=1)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
