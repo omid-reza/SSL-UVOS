@@ -8,7 +8,8 @@ python -W ignore src/eval_oneshot.py \
         --ratio 10 \
         --tau 1.0 \
         --save_path DAVIS_Attn \
-        --resume_path ./rgb_models/checkpoint_dino-s-8.pth
+        --resume_path ./rgb_models/checkpoint_dino-s-8.pth \
+        --world_size 4
 
 #rm davis2017-evaluation/results/unsupervised/rvos/*.csv
 
