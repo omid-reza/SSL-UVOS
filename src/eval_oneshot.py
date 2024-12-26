@@ -188,10 +188,24 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         majority_votes, _ = stats.mode(att_map, axis=1)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
-        fig, ax = plt.subplots(figsize=(8.54, 4.8))
+
+        dpi = 100
+        width_inches = 854 / dpi  # 854 pixels
+        height_inches = 480 / dpi  # 480 pixels
+
+        fig = plt.figure(figsize=(width_inches, height_inches), dpi=dpi)
+        ax = plt.Axes(fig, [0., 0., 1., 1.])  # This removes all padding
+        fig.add_axes(ax)
+
         ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
         ax.axis('off')
-        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=100, bbox_inches='tight', pad_inches=0)
+
+        plt.savefig(
+            os.path.join(parent_directory, category, f"{t}.png"),
+            dpi=dpi,
+            bbox_inches=None,  # Don't use bbox_inches='tight' as it can modify the dimensions
+            pad_inches=0
+        )
         plt.close(fig)
         print("{}->SAVED :)".format(t))
     #
