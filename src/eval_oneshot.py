@@ -191,7 +191,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         fig, ax = plt.subplots(figsize=(8.54, 4.8))
         ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
         ax.axis('off')
-        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), bbox_inches='tight', pad_inches=0)
+        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=100, bbox_inches='tight', pad_inches=0)
         plt.close(fig)
         print("{}->SAVED :)".format(t))
     #
