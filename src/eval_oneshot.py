@@ -188,10 +188,10 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         majority_votes, _ = stats.mode(att_map, axis=1)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
-        fig, ax = plt.subplots(figsize=(600 / 100, 400 / 100))
+        fig, ax = plt.subplots(figsize=(854 / 100, 480 / 100))
         ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
         ax.axis('off')
-        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=300, bbox_inches='tight', pad_inches=0)
+        plt.savefig(os.path.join(parent_directory, category, f"{t}.png"), dpi=100, pad_inches=0)
         plt.close(fig)
         print("{}->SAVED :)".format(t))
     #
