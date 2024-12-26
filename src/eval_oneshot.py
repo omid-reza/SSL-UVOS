@@ -194,7 +194,8 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         height_inches = 480 / dpi  # 480 pixels
 
         fig = plt.figure(figsize=(width_inches, height_inches), dpi=dpi)
-        ax = plt.Axes(fig, [0., 0., 1., 1.])  # This removes all padding
+        ax = plt.Axes(fig, [0, 0, 1, 1])
+        ax.set_axis_off()
         fig.add_axes(ax)
 
         ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
