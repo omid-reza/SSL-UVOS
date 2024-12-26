@@ -35,7 +35,6 @@ for t in range(len(attention_maps) - 1):
 
 flow_tensors = np.array(flow_tensors)
 flow_images = flow_to_image(flow_tensors)
-print(flow_images.shape)
 for t in range(flow_tensors.shape[0]):
     flow_image = flow_images[t]
     plt.figure(figsize=(8, 8))
