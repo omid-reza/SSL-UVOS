@@ -18,13 +18,13 @@ def save_masked_maps(masked_maps, output_folder):
 
 folder_path = 'Spatio-temporalAttentionMaps/dog'
 attention_maps = []
-for filename in sorted(os.listdir(folder_path)):
+for filename in sorted(os.listdir(folder_path), key=lambda x: int(os.path.splitext(x)[0])):
     attention_map = cv2.imread(os.path.join(folder_path, filename), cv2.IMREAD_GRAYSCALE)
     attention_maps.append(attention_map)
 attention_maps = np.array(attention_maps)
 folder_path = 'Spatio-temporalAttentionMaps/dog_mask'
 masks = []
-for filename in sorted(os.listdir(folder_path)):
+for filename in sorted(os.listdir(folder_path), key=lambda x: int(os.path.splitext(x)[0])):
     mask = cv2.imread(os.path.join(folder_path, filename), cv2.IMREAD_GRAYSCALE)
     masks.append(mask)
 
