@@ -185,8 +185,8 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     attention_reshaped = attention.reshape(T, H * W, k.shape[0], H * W) # Shape becomes (T, H * W, K, H * W)
     for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
         att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
-        majority_votes, _ = stats.mode(att_map, axis=1)
-        att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
+        majority_votes, _ = stats.mode(att_map, axis=1) # (H* W) * (H *W)
+        att_map_avg = majority_votes.argmax(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate # should argmax be used?
         att_map_reshaped = att_map_avg.reshape(H, W)
         target_height = 480
         target_width = 854
