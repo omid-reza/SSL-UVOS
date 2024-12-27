@@ -189,7 +189,7 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
         target_height = 480
-        target_width = 584
+        target_width = 854
         scale_y = target_height / H
         scale_x = target_width / W
         att_map_reshaped = zoom(att_map_reshaped, (scale_y, scale_x), order=3)
