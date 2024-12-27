@@ -22,7 +22,7 @@ from sklearn.cluster import SpectralClustering
 
 from PIL import Image
 from scipy import stats
-
+from scipy.ndimage import zoom
 import pickle
 
 def kl_distance(final_set, attn):
@@ -188,26 +188,16 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
         majority_votes, _ = stats.mode(att_map, axis=1)
         att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate
         att_map_reshaped = att_map_avg.reshape(H, W)
-
-        dpi = 100
-        width_inches = 854 / dpi  # 854 pixels
-        height_inches = 480 / dpi  # 480 pixels
-
-        fig = plt.figure(figsize=(width_inches, height_inches), dpi=dpi)
-        ax = plt.Axes(fig, [0, 0, 1, 1])
-        ax.set_axis_off()
-        fig.add_axes(ax)
-
-        ax.imshow(att_map_reshaped, cmap='viridis', interpolation='nearest')
-        ax.axis('off')
-
-        plt.savefig(
+        target_height = 480
+        target_width = 584
+        scale_y = target_height / H
+        scale_x = target_width / W
+        att_map_reshaped = zoom(att_map_reshaped, (scale_y, scale_x), order=3)
+        plt.imsave(
             os.path.join(parent_directory, category, f"{t}.png"),
-            dpi=dpi,
-            bbox_inches=None,  # Don't use bbox_inches='tight' as it can modify the dimensions
-            pad_inches=0
+            att_map_reshaped,
+            cmap='viridis'
         )
-        plt.close(fig)
         print("{}->SAVED :)".format(t))
     #
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
