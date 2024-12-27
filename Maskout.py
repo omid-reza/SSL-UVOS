@@ -8,13 +8,10 @@ np.set_printoptions(threshold=np.inf)
 
 
 def save_masked_maps(masked_maps, output_folder):
-    """Save masked attention maps to a folder."""
     os.makedirs(output_folder, exist_ok=True)
     for i, masked_map in enumerate(masked_maps):
-        output_path = os.path.join(output_folder, f"masked_map_{i+1}.png")
-        # Normalize and save the image
-        normalized_map = cv2.normalize(masked_map, None, 0, 255, cv2.NORM_MINMAX)
-        cv2.imwrite(output_path, normalized_map.astype(np.uint8))
+        output_path = os.path.join(output_folder, f"{i}.png")
+        plt.imsave(output_path, masked_map, cmap="viridis")
 
 folder_path = 'Spatio-temporalAttentionMaps/dog'
 attention_maps = []
