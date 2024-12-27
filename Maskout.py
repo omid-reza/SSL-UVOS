@@ -28,7 +28,7 @@ for filename in sorted(os.listdir(folder_path), key=lambda x: int(os.path.splite
     mask = cv2.imread(os.path.join(folder_path, filename), cv2.IMREAD_GRAYSCALE)
     masks.append(mask)
 
-masks = np.array(masks)[:, :,:-1]
+masks = np.array(masks)
 masked_attention_maps = []
 for attention_map, mask in zip(attention_maps, masks):
     attention_map = attention_map.astype(np.float32)
