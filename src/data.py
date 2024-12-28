@@ -57,7 +57,7 @@ class Dataloader(Dataset):
     def __getitem__(self, idx):
         if self.train:
             seq_name = random.choice(self.seq)
-            seq = os.path.join(self.img_dir, seq_name, '*.jpg')
+            seq = os.path.join(self.img_dir, seq_name, '*.png')
             imgs = gb.glob(seq)
             imgs.sort()
             length = len(imgs)
