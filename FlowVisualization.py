@@ -6,7 +6,7 @@ from src.omnimotionutil import flow_uv_to_colors, flow_to_image
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 np.set_printoptions(threshold=np.inf)
 
-folder_path = 'Spatio-temporalAttentionMaps/dog_masked'
+folder_path = 'Spatio-temporalAttentionMaps/butterfly'
 attention_maps = []
 for filename in sorted(os.listdir(folder_path), key=lambda x: int(os.path.splitext(x)[0])):
     attention_map = cv2.imread(os.path.join(folder_path, filename), cv2.IMREAD_GRAYSCALE)
@@ -17,30 +17,10 @@ flow_tensors = []
 for t in range(len(attention_maps) - 1):
     frame_t, frame_t1 = attention_maps[t], attention_maps[t + 1]
     H, W = frame_t.shape
-    flow = cv2.calcOpticalFlowFarneback(
-        prev=frame_t,
-        next=frame_t1,
-        flow=None,
-        pyr_scale=0.5,
-        levels=3,
-        winsize=15,
-        iterations=3,
-        poly_n=5,
-        poly_sigma=1.2,
-        flags=0,
-    )
+    flow = cv2.calcOpticalFlowFarneback(prev=frame_t, next=frame_t1, flow=None, pyr_scale=0.5, levels=3, winsize=15, iterations=20, poly_n=5, poly_sigma=1.2, flags=0)
     flow_tensors.append(flow)  # Shape(H, W, 2) where each pixel has (dx, dy)
-
-for i in range(len(flow_tensors)):
-    flow = flow_tensors[i]
-    flow = flow_uv_to_colors(flow[:, :, 0], flow[:, :, 1])
-    # plt.figure(figsize=(8, 8))
-    # plt.imshow(flow)
-    # plt.title(f"Flow Visualization for Frame Pair {i}-{i + 1}")
-    # plt.axis('off')
-    plt.imsave(os.path.join("Flows_dog", f"{i}{i + 1}.png"), flow)
-
-
+    colors = flow_uv_to_colors(flow[:, :, 0], flow[:, :, 1])
+    plt.imsave(os.path.join("Flows_butterfly", f"{t}{t + 1}.png"), colors)
 
 # flow_tensors = np.array(flow_tensors)
 # flow_images = flow_to_image(flow_tensors)
