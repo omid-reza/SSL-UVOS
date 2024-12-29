@@ -1,9 +1,9 @@
 import os
 import cv2
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 from src.omnimotionutil import flow_uv_to_colors, flow_to_image
-import shutil
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 np.set_printoptions(threshold=np.inf)
