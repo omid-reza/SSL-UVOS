@@ -3,24 +3,30 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from src.omnimotionutil import flow_uv_to_colors, flow_to_image
+import shutil
+
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 np.set_printoptions(threshold=np.inf)
 
-folder_path = 'Spatio-temporalAttentionMaps/butterfly'
-attention_maps = []
-for filename in sorted(os.listdir(folder_path), key=lambda x: int(os.path.splitext(x)[0])):
-    attention_map = cv2.imread(os.path.join(folder_path, filename), cv2.IMREAD_GRAYSCALE)
-    attention_maps.append(attention_map)
 flow_tensors = []
+attention_maps = []
+output_folder = 'Flows_butterfly'
+input_folder = 'Spatio-temporalAttentionMaps/butterfly'
+if os.path.exists(output_folder):
+    shutil.rmtree(output_folder)
+os.makedirs(output_folder)
 
-# Step 3: Compute the displacement between consecutive frames
+for filename in sorted(os.listdir(input_folder), key=lambda x: int(os.path.splitext(x)[0])):
+    attention_map = cv2.imread(os.path.join(input_folder, filename), cv2.IMREAD_GRAYSCALE)
+    attention_maps.append(attention_map)
+
 for t in range(len(attention_maps) - 1):
     frame_t, frame_t1 = attention_maps[t], attention_maps[t + 1]
     H, W = frame_t.shape
     flow = cv2.calcOpticalFlowFarneback(prev=frame_t, next=frame_t1, flow=None, pyr_scale=0.5, levels=3, winsize=15, iterations=20, poly_n=5, poly_sigma=1.2, flags=0)
     flow_tensors.append(flow)  # Shape(H, W, 2) where each pixel has (dx, dy)
     colors = flow_uv_to_colors(flow[:, :, 0], flow[:, :, 1])
-    plt.imsave(os.path.join("Flows_butterfly", f"{t}{t + 1}.png"), colors)
+    plt.imsave(os.path.join(output_folder, f"{t}{t + 1}.png"), colors)
 
 # flow_tensors = np.array(flow_tensors)
 # flow_images = flow_to_image(flow_tensors)
@@ -34,16 +40,12 @@ for t in range(len(attention_maps) - 1):
 #     plt.cla()
 #     plt.close()
 
-# import cv2
-# import os
-#
-# image_folder = "Flows_dog"
-# images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
+# images = [img for img in os.listdir(output_folder) if img.endswith(".png")]
 # images.sort(key=lambda x: int(x.split('.')[0]))
-# frame = cv2.imread(os.path.join(image_folder, images[0]))
+# frame = cv2.imread(os.path.join(output_folder, images[0]))
 # height, width, layers = frame.shape
-# video = cv2.VideoWriter(os.path.join("Flows_dog", "Flow"+".avi"), 0, 4, (width,height))
+# video = cv2.VideoWriter(os.path.join(output_folder, "Flow"+".avi"), 0, 4, (width,height))
 # for image in images:
-#     video.write(cv2.imread(os.path.join(image_folder, image)))
+#     video.write(cv2.imread(os.path.join(output_folder, image)))
 # cv2.destroyAllWindows()
 # video.release()
