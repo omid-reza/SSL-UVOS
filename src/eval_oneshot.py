@@ -175,31 +175,31 @@ def inference(masks_collection, rgbs, gts, model, T, ratio, tau, device, categor
     attention = einops.rearrange(attention, 'q k h n m -> (q n) h (k m)')
     attention = attention.softmax(dim=-1)
     attention = attention.mean(dim=1) # thw khw
-    #
-    parent_directory = os.path.join(os.getcwd(), "Spatio-temporalAttentionMaps")
-    if not os.path.exists(parent_directory):
-        os.mkdir(parent_directory)
-    if os.path.exists(os.path.join(parent_directory, category)):
-        shutil.rmtree(os.path.join(parent_directory, category))
-    os.mkdir(os.path.join(parent_directory, category))
-    attention_reshaped = attention.reshape(T, H * W, k.shape[0], H * W) # Shape becomes (T, H * W, K, H * W)
-    for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
-        att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
-        majority_votes, _ = stats.mode(att_map, axis=1) # (H* W) * (H *W)
-        att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate # should argmax be used?
-        att_map_reshaped = att_map_avg.reshape(H, W)
-        target_height = 480
-        target_width = 854
-        scale_y = target_height / H
-        scale_x = target_width / W
-        att_map_reshaped = zoom(att_map_reshaped, (scale_y, scale_x), order=3)
-        plt.imsave(
-            os.path.join(parent_directory, category, f"{t}.png"),
-            att_map_reshaped,
-            cmap='viridis'
-        )
-        print("{}->SAVED :)".format(t))
-    #
+    # COMPUTING AND SAVING TEMPORAL ATTENTION:
+    # parent_directory = os.path.join(os.getcwd(), "Spatio-temporalAttentionMaps")
+    # if not os.path.exists(parent_directory):
+    #     os.mkdir(parent_directory)
+    # if os.path.exists(os.path.join(parent_directory, category)):
+    #     shutil.rmtree(os.path.join(parent_directory, category))
+    # os.mkdir(os.path.join(parent_directory, category))
+    # attention_reshaped = attention.reshape(T, H * W, k.shape[0], H * W) # Shape becomes (T, H * W, K, H * W)
+    # for t in range(attention_reshaped.shape[0]): # for t in range(number of frames)
+    #     att_map = attention_reshaped[t].detach().cpu().numpy() # Shape become (H * W, K, H * W)
+    #     majority_votes, _ = stats.mode(att_map, axis=1) # (H* W) * (H *W)
+    #     att_map_avg = majority_votes.max(axis=1) # Shape becomes (H * W) | Note: max or min can be a great candidate # should argmax be used?
+    #     att_map_reshaped = att_map_avg.reshape(H, W)
+    #     target_height = 480
+    #     target_width = 854
+    #     scale_y = target_height / H
+    #     scale_x = target_width / W
+    #     att_map_reshaped = zoom(att_map_reshaped, (scale_y, scale_x), order=3)
+    #     plt.imsave(
+    #         os.path.join(parent_directory, category, f"{t}.png"),
+    #         att_map_reshaped,
+    #         cmap='viridis'
+    #     )
+    #     print("{}->SAVED :)".format(t))
+    # END COMPUTING AND SAVING TEMPORAL ATTENTION
     ## clustering on the spatio-temporal attention maps and produce segmentation for the whole video
     dist = hierarchical_cluster(attention.view(T, H*W, -1), tau=tau, num_iter=10000, device=device)
     dist = einops.rearrange(dist, '(s p) (t h w) -> t s p h w', t=T, p=1, h=H)
