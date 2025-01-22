@@ -4,7 +4,7 @@
 #SBATCH --gpus=1
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=omid.orh@gmail.com
-#SBATCH --partition=phys
+#SBATCH --partition=all
 #SBATCH -o ./slurm_outputs/EVAL-%j.out
 #SBATCH -w virya3
 
