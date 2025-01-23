@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -J BBA-EVAL
-#SBATCH --mem=190GB
+#SBATCH --mem=400GB
 #SBATCH --gpus=1
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=omid.orh@gmail.com
-#SBATCH --partition=phys
+#SBATCH --partition=all
 #SBATCH -o ./slurm_outputs/EVAL-%j.out
-#SBATCH -w virya2
+#SBATCH -w virya4
 
 module load anaconda
 eval "$(conda shell.bash hook)"
