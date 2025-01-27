@@ -6,7 +6,7 @@
 #SBATCH --mail-user=omid.orh@gmail.com
 #SBATCH --partition=all
 #SBATCH -o ./slurm_outputs/EVAL-%j.out
-#SBATCH -w virya5
+#SBATCH -w virya6
 
 module load anaconda
 eval "$(conda shell.bash hook)"
