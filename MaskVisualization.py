@@ -14,6 +14,7 @@ for mask in masks:
         frame = frame.cpu().detach().numpy()
         for layer_idx, layer in enumerate(frame):
             layer = layer[0]
+            print("Layer {}:".format(layer_idx))
             save_dir = 'masks/{}_split/{}/'.format(mask, layer_idx)
             os.makedirs(save_dir, exist_ok=True)
             plt.imsave('masks/{}_split/{}/{}.png'.format(mask, layer_idx, fr_idx), layer)
