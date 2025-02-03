@@ -5,7 +5,7 @@
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=omid.orh@gmail.com
 #SBATCH --partition=all
-#SBATCH -o ./slurm_outputs/MaskSeparation-%j.out
+#SBATCH -o ./slurm_outputs/MaskObjectSelection-%j.out
 #SBATCH --chdir=../
 #SBATCH -w virya5
 
