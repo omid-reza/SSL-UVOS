@@ -31,7 +31,7 @@ parent_folders = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox',
 for parent_folder in parent_folders:
     target_path = target_base.format(parent_folder)
     parent_folder = candidate_base.format(parent_folder)
-    subfolders = [f for f in os.listdir(parent_folder) if os.path.isdir(os.path.join(parent_folder, f))]
+    subfolders = [os.path.join(parent_folder, f) for f in os.listdir(parent_folder) if os.path.isdir(os.path.join(parent_folder, f))]
     highest_common_pixel,  highest_common_pixel_subfolder= 0, None
     for subfolder in subfolders:
         candidate_path = os.path.join(subfolder, "0.png")
