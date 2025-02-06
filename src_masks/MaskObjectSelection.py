@@ -1,5 +1,6 @@
 import os
 import cv2
+import shutil
 import numpy as np
 
 def get_common_pixels(candidate_path, target_path,target_color=np.array([128, 0, 0]), candidate_color=np.array([68, 1, 84])):
@@ -19,7 +20,9 @@ def get_common_pixels(candidate_path, target_path,target_color=np.array([128, 0,
     target = np.all(target_image == target_color, axis=-1)
     return np.sum(np.logical_and(candidate, target))
 
+
 candidate_base = "masks/{}_split/"
+new_mask_folder_path = "filtered_masks/"
 target_base = "DAVIS/Annotations_unsupervised/480p/{}/00000.png"
 parent_folders = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees',
                    'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane',
@@ -27,9 +30,13 @@ parent_folders = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox',
                    'bike-packing', 'dogs-jump', 'gold-fish', 'india', 'judo', 'lab-coat', 'loading', 'mbike-trick',
                    'pigs', 'shooting']
 
-for parent_folder in parent_folders:
-    t_path = target_base.format(parent_folder)
-    parent_folder = candidate_base.format(parent_folder)
+if os.path.exists(new_mask_folder_path):
+    shutil.rmtree(new_mask_folder_path)
+os.makedirs(new_mask_folder_path)
+
+for parent_folder_name in parent_folders:
+    t_path = target_base.format(parent_folder_name)
+    parent_folder = candidate_base.format(parent_folder_name)
     subfolders = [os.path.join(parent_folder, f) for f in os.listdir(parent_folder) if os.path.isdir(os.path.join(parent_folder, f))]
     highest_common_pixel,  highest_common_pixel_subfolder= 0, None
     for subfolder in subfolders:
@@ -37,5 +44,5 @@ for parent_folder in parent_folders:
         common_pixels = get_common_pixels(candidate_path=c_path, target_path=t_path)
         if common_pixels > highest_common_pixel:
             highest_common_pixel, highest_common_pixel_subfolder = common_pixels, subfolder
-    print(highest_common_pixel, highest_common_pixel_subfolder)
-    # TODO: set this path as the main path and remove other paths
+    shutil.copytree(highest_common_pixel_subfolder, os.path.join(new_mask_folder_path, parent_folder_name))
+    print("{} was moved to {}".format(parent_folder_name, new_mask_folder_path))
