@@ -19,9 +19,8 @@ def get_common_pixels(candidate_path, target_path,target_color=np.array([128, 0,
     target = np.all(target_image == target_color, axis=-1)
     return np.sum(np.logical_and(candidate, target))
 
-# Define the file paths for the candidate and target images
-target_base = "DAVIS/Annotations_unsupervised/480p/{}/00000.png"
 candidate_base = "masks/{}_split/"
+target_base = "DAVIS/Annotations_unsupervised/480p/{}/00000.png"
 parent_folders = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees',
                    'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane',
                    'motocross-jump', 'horsejump-high', 'drift-straight', 'car-roundabout', 'paragliding-launch',
@@ -29,13 +28,14 @@ parent_folders = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox',
                    'pigs', 'shooting']
 
 for parent_folder in parent_folders:
-    target_path = target_base.format(parent_folder)
+    t_path = target_base.format(parent_folder)
     parent_folder = candidate_base.format(parent_folder)
     subfolders = [os.path.join(parent_folder, f) for f in os.listdir(parent_folder) if os.path.isdir(os.path.join(parent_folder, f))]
     highest_common_pixel,  highest_common_pixel_subfolder= 0, None
     for subfolder in subfolders:
-        candidate_path = os.path.join(subfolder, "0.png")
-        common_pixels = get_common_pixels(candidate_path=candidate_path, target_path=target_path)
+        c_path = os.path.join(subfolder, "0.png")
+        common_pixels = get_common_pixels(candidate_path=c_path, target_path=t_path)
         if common_pixels > highest_common_pixel:
             highest_common_pixel, highest_common_pixel_subfolder = common_pixels, subfolder
     print(highest_common_pixel, highest_common_pixel_subfolder)
+    # TODO: set this path as the main path and remove other paths
