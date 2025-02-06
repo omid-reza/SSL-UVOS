@@ -1,33 +1,26 @@
-import os
 import cv2
 import numpy as np
 
+def get_common_pixels(candidate_path, target_path,target_color=np.array([128, 0, 0]), candidate_color=np.array([68, 1, 84])):
+    target_image = cv2.imread(target_path)
+    candidate_image = cv2.imread(candidate_path)
+    # Resize the candidate image to match the dimensions of the target image
+    candidate_image = cv2.resize(candidate_image, (target_image.shape[1], target_image.shape[0]))
 
-def compute_iou(mask1, mask2):
-    mask1 = cv2.resize(mask1, (mask2.shape[1], mask2.shape[0]), interpolation=cv2.INTER_NEAREST)
-    intersection = np.logical_and(mask1, mask2).sum()
-    union = np.logical_or(mask1, mask2).sum()
-    return intersection / union if union > 0 else 0
+    # Convert the candidate image from BGR to RGB format for proper color processing
+    candidate_image = cv2.cvtColor(candidate_image, cv2.COLOR_BGR2RGB)
+    # Create a binary mask where pixels that do not match the candidate_color are marked as True
+    candidate = np.all(candidate_image != candidate_color, axis=-1)
 
+    # Convert the target image from BGR to RGB format for proper color processing
+    target_image = cv2.cvtColor(target_image, cv2.COLOR_BGR2RGB)
+    # Create a binary mask where pixels that exactly match the target_color are marked as True
+    target = np.all(target_image == target_color, axis=-1)
+    return np.sum(np.logical_and(candidate, target))
 
-def find_best_matching_folder(reference_mask_path, folders_root):
-    reference_mask = cv2.imread(reference_mask_path, cv2.IMREAD_GRAYSCALE)
-    reference_mask = reference_mask > 0  # Convert to binary
-    best_iou, best_folder = 0, None
-
-    for folder in os.listdir(folders_root):
-        folder_path = os.path.join(folders_root, folder)
-        first_frame_mask_path = os.path.join(folder_path, "00000.png")
-        if os.path.exists(first_frame_mask_path):
-            candidate_mask = cv2.imread(first_frame_mask_path, cv2.IMREAD_GRAYSCALE)
-            candidate_mask = candidate_mask > 0
-            iou = compute_iou(reference_mask, candidate_mask)
-            if iou > best_iou:
-                best_iou = iou
-                best_folder = folder
-    return best_folder, best_iou
-
-reference_mask_path = "DAVIS/Annotations_unsupervised/480p/dog/00000.png"
-folders_root = "masks/dog_split/"
-best_folder, best_iou = find_best_matching_folder(reference_mask_path, folders_root)
-print(f"Best matching folder: {best_folder} with IoU: {best_iou:.4f}")
+# Define the file paths for the candidate and target images
+# TODO: add 1st pix from all of the folders
+candidates_path = ['0.png', '1.png']
+# target_path = "DAVIS/Annotations_unsupervised/480p/dog/00000.png"
+# for candidate_path in candidates_path:
+    # print(get_common_pixels(candidate_path=candidate_path, target_path=target_path))
