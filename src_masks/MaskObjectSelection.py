@@ -35,9 +35,7 @@ for parent_folder in parent_folders:
     highest_common_pixel,  highest_common_pixel_subfolder= 0, None
     for subfolder in subfolders:
         candidate_path = os.path.join(subfolder, "0.png")
-        print("Candidate path: ", candidate_path)
-        print("Target path: ",target_path)
-    #     common_pixels = get_common_pixels(candidate_path=candidate_path, target_path=target_path)
-    #     if common_pixels > highest_common_pixel:
-    #         highest_common_pixel, highest_common_pixel_subfolder = common_pixels, subfolder
-    # print(highest_common_pixel, highest_common_pixel_subfolder)
+        common_pixels = get_common_pixels(candidate_path=candidate_path, target_path=target_path)
+        if common_pixels > highest_common_pixel:
+            highest_common_pixel, highest_common_pixel_subfolder = common_pixels, subfolder
+    print(highest_common_pixel, highest_common_pixel_subfolder)
