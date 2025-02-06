@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J BBAMObjS
-#SBATCH --mem=80GB
+#SBATCH --mem=200GB
 #SBATCH --gpus=1
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=omid.orh@gmail.com

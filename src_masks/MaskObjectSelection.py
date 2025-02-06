@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 
@@ -19,8 +20,22 @@ def get_common_pixels(candidate_path, target_path,target_color=np.array([128, 0,
     return np.sum(np.logical_and(candidate, target))
 
 # Define the file paths for the candidate and target images
-# TODO: add 1st pix from all of the folders
-candidates_path = ['0.png', '1.png']
-# target_path = "DAVIS/Annotations_unsupervised/480p/dog/00000.png"
-# for candidate_path in candidates_path:
-    # print(get_common_pixels(candidate_path=candidate_path, target_path=target_path))
+target_base = "DAVIS/Annotations_unsupervised/480p/{}/00000.png"
+candidate_base = "masks/{}_split/"
+parent_folders = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees',
+                   'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane',
+                   'motocross-jump', 'horsejump-high', 'drift-straight', 'car-roundabout', 'paragliding-launch',
+                   'bike-packing', 'dogs-jump', 'gold-fish', 'india', 'judo', 'lab-coat', 'loading', 'mbike-trick',
+                   'pigs', 'shooting']
+
+for parent_folder in parent_folders:
+    target_path = target_base.format(parent_folder)
+    parent_folder = candidate_base.format(parent_folder)
+    subfolders = [f for f in os.listdir(parent_folder) if os.path.isdir(os.path.join(parent_folder, f))]
+    highest_common_pixel,  highest_common_pixel_subfolder= 0, None
+    for subfolder in subfolders:
+        candidate_path = os.path.join(subfolder, "0.png")
+        common_pixels = get_common_pixels(candidate_path=candidate_path, target_path=target_path)
+        if common_pixels > highest_common_pixel:
+            highest_common_pixel, highest_common_pixel_subfolder = common_pixels, subfolder
+    print(highest_common_pixel, highest_common_pixel_subfolder)
